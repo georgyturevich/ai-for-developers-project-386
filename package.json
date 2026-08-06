@@ -1,0 +1,13 @@
+{
+  "name": "cal-bookings-api",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "compile": "tsp compile ."
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.14.0",
+    "@typespec/http": "^1.14.0",
+    "@typespec/openapi3": "^1.14.0"
+  }
+}
