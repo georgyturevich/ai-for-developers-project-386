@@ -21,11 +21,13 @@ namespace CalendarBookings;
 
 @doc("Идентификатор-слаг, задаваемый владельцем: строчные буквы, цифры и дефисы.")
 @pattern("^[a-z0-9]+(-[a-z0-9]+)*$")
+@example("strizhka")
 scalar Slug extends string;
 
 @doc("Длительность в минутах. Верхняя граница 540 = 9 часов рабочего дня: слот должен целиком помещаться в 09:00–18:00.")
 @minValue(1)
 @maxValue(540)
+@example(60)
 scalar Duration extends int32;
 
 // ---------- Models ----------
@@ -37,9 +39,11 @@ model EventType {
 
   @doc("Название, видимое гостю.")
   @minLength(1)
+  @example("Стрижка")
   name: string;
 
   @doc("Описание, видимое гостю.")
+  @example("Стрижка и укладка за один час.")
   description: string;
 
   @doc("Длительность слота этого типа в минутах.")
@@ -49,36 +53,45 @@ model EventType {
 @doc("Краткая карточка типа события, вложенная в бронирование.")
 model EventTypeSummary {
   id: Slug;
+
+  @example("Стрижка")
   name: string;
+
   durationInMinutes: Duration;
 }
 
 @doc("Свободный слот. Конец слота выводится: start + длительность типа события.")
 model Slot {
   @doc("Начало слота (момент времени в UTC).")
+  @example(utcDateTime.fromISO("2026-08-12T06:00:00Z"))
   start: utcDateTime;
 }
 
 @doc("Данные гостя, создающего бронирование.")
 model GuestInfo {
   @minLength(1)
+  @example("Иван Петров")
   name: string;
 
   @format("email")
+  @example("ivan.petrov@example.com")
   email: string;
 
+  @example("Хочу обсудить детали заранее.")
   comment?: string;
 }
 
 @doc("Бронирование: резервация слота гостем. Отмена и перенос не поддерживаются.")
 model Booking {
   @doc("Серверный идентификатор.")
+  @example(1)
   id: int64;
 
   @doc("Тип события, вложен для самодостаточности списка владельца.")
   eventType: EventTypeSummary;
 
   @doc("Начало бронирования (UTC). Конец = start + длительность типа.")
+  @example(utcDateTime.fromISO("2026-08-13T09:00:00Z"))
   start: utcDateTime;
 
   guest: GuestInfo;
@@ -90,6 +103,7 @@ model CreateBookingRequest {
   eventTypeId: Slug;
 
   @doc("Выбранный старт слота (UTC). Должен лежать на сетке, внутри окна записи и не в прошлом.")
+  @example(utcDateTime.fromISO("2026-08-12T06:00:00Z"))
   start: utcDateTime;
 
   guest: GuestInfo;
@@ -100,9 +114,11 @@ model CreateBookingRequest {
 @doc("Единое тело ошибки.")
 model ApiError {
   @doc("Машиночитаемый код: \"validation_failed\", \"event_type_not_found\", \"duplicate_slug\", \"slot_unavailable\".")
+  @example("slot_unavailable")
   code: string;
 
   @doc("Человекочитаемое описание.")
+  @example("Слот занят: время пересекается с существующей записью.")
   message: string;
 }
 

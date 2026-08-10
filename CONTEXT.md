@@ -5,8 +5,12 @@ A single-owner appointment booking app: the Owner publishes Event Types, and Gue
 ## Language
 
 **Owner** (ru: «владелец календаря»):
-The single, predefined person whose calendar is being booked. There is exactly one Owner; the admin area acts as this profile by default. Days and Business Hours are reckoned in the Owner's fixed timezone.
+The single, predefined person whose calendar is being booked. There is exactly one Owner; the Owner Area acts as this profile by default. Days and Business Hours are reckoned in the Owner's fixed timezone, Europe/Moscow.
 _Avoid_: admin, user, host, account
+
+**Owner Area** (ru: «кабинет владельца»):
+The part of the UI where the Owner creates Event Types and views upcoming Bookings. Open without authentication by design (see ADR-0001); there is no login.
+_Avoid_: admin area, admin panel, dashboard
 
 **Guest** (ru: «гость»):
 An anonymous visitor who books a Slot. Guests have no account and no login.

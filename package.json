@@ -3,11 +3,16 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "compile": "tsp compile ."
+    "compile": "tsp compile .",
+    "mock": "prism mock -p 4010 tsp-output/@typespec/openapi3/openapi.yaml"
   },
   "dependencies": {
     "@typespec/compiler": "^1.14.0",
     "@typespec/http": "^1.14.0",
     "@typespec/openapi3": "^1.14.0"
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.14.2",
+    "redoc-cli": "^0.13.21"
   }
 }
