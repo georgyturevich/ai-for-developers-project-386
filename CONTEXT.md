@@ -21,15 +21,15 @@ A named kind of appointment defined by the Owner: an owner-provided slug id, nam
 _Avoid_: booking kind, meeting type, event
 
 **Slot** (ru: «слот»):
-A time interval inside Business Hours that a Guest can book for a chosen Event Type; its duration equals that Event Type's duration. Starts lie on a grid anchored at 09:00, stepping by the Event Type's duration, and a Slot must fit entirely within Business Hours. A Slot is either free or occupied.
+A time interval inside Business Hours that a Guest can book for a chosen Event Type; its duration equals that Event Type's duration. Starts lie on a grid anchored at 09:00, stepping by the Event Type's duration, and a Slot must fit entirely within Business Hours. A Slot is either free or occupied: occupied means its interval overlaps an existing Booking's interval. Intervals are half-open — `[start, start + duration)` — so one Slot ending exactly when another begins is not an overlap. A Slot is in the past when its start precedes the current moment; past Slots are never offered.
 _Avoid_: time slot, availability
 
 **Booking** (ru: «бронирование», «запись», «встреча»):
-A Guest's reservation of one Slot for one Event Type, holding the Guest's name, email and optional comment. No two Bookings may overlap in time, regardless of Event Type. Bookings cannot be cancelled or rescheduled.
+A Guest's reservation of one Slot for one Event Type, holding the Guest's name, email and optional comment. No two Bookings may overlap in time, regardless of Event Type; intervals are half-open, so back-to-back Bookings are allowed. A Booking is upcoming until its end (start + duration) has passed; the Owner's upcoming list shows ongoing and future Bookings, earliest first. Bookings cannot be cancelled or rescheduled.
 _Avoid_: meeting, appointment, reservation
 
 **Booking Window** (ru: «окно записи»):
-The calendar days on which Slots are offered: the current day plus the next 13, in the Owner's timezone. Slots in the past are never offered.
+The calendar days on which Slots are offered: the current day plus the next 13, in the Owner's timezone. Slots in the past (start before the current moment) are never offered, even on days inside the window.
 _Avoid_: availability window, schedule
 
 **Business Hours** (ru: «рабочие часы»):
