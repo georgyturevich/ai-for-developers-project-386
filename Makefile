@@ -1,7 +1,7 @@
 SPEC := tsp-output/@typespec/openapi3/openapi.yaml
 DOCS := tsp-output/docs/openapi.html
 
-.PHONY: all spec docs clean backend-install backend-run backend-test backend-lint
+.PHONY: all spec docs clean dev backend-install backend-run backend-test backend-lint
 
 all: docs
 
@@ -19,6 +19,13 @@ $(DOCS): $(SPEC)
 
 backend-install:
 	cd backend && uv sync --all-groups
+
+dev:
+	@set -e; \
+	(cd backend && uv run uvicorn cal_bookings.app:create_app --factory --reload --port 8000) & B=$$!; \
+	(cd frontend && VITE_API_URL=http://localhost:8000 npm run dev) & F=$$!; \
+	trap 'kill $$B $$F 2>/dev/null || true' EXIT INT TERM; \
+	wait
 
 backend-run:
 	cd backend && uv run uvicorn cal_bookings.app:create_app --factory --reload --port 8000
