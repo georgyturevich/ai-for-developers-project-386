@@ -13,7 +13,6 @@ from zoneinfo import ZoneInfo
 
 OWNER_TIMEZONE = ZoneInfo("Europe/Moscow")
 
-BUSINESS_HOURS_START = time(hour=9)
 BUSINESS_HOURS_END = time(hour=18)
 
 WINDOW_LENGTH_DAYS = 14  # the current day plus the next 13
@@ -98,7 +97,8 @@ def is_valid_grid_start(start: datetime, duration_minutes: int) -> bool:
 def is_within_window(start: datetime, now: datetime) -> bool:
     """True when `start` falls on a calendar day inside the Booking Window."""
     start_day = start.astimezone(OWNER_TIMEZONE).date()
-    return window_start_date(now) <= start_day <= window_start_date(now) + timedelta(days=WINDOW_LENGTH_DAYS - 1)
+    last_day = window_start_date(now) + timedelta(days=WINDOW_LENGTH_DAYS - 1)
+    return window_start_date(now) <= start_day <= last_day
 
 
 def is_past(start: datetime, now: datetime) -> bool:
@@ -114,10 +114,6 @@ def overlaps(a_start: datetime, a_end: datetime, b_start: datetime, b_end: datet
     return a_start < b_end and b_start < a_end
 
 
-def overlaps_any(interval: OccupiedInterval, start: datetime, end: datetime) -> bool:
-    return overlaps(interval.start, interval.end, start, end)
-
-
 def generate_slot_starts(
     event_type: EventType, now: datetime, occupied: list[OccupiedInterval] | None = None
 ) -> list[datetime]:
@@ -130,7 +126,7 @@ def generate_slot_starts(
             if is_past(start, now):
                 continue
             end = start + timedelta(minutes=duration)
-            if any(overlaps_any(interval, start, end) for interval in occupied):
+            if any(overlaps(interval.start, interval.end, start, end) for interval in occupied):
                 continue
             free.append(start)
     return free

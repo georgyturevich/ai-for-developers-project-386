@@ -130,11 +130,11 @@ async def test_unknown_event_type_slots_404():
         assert response.json() == {"code": "event_type_not_found", "message": response.json()["message"]}
 
 
-async def test_malformed_slug_in_path_is_404():
+async def test_malformed_slug_in_path_is_validation_failed():
     async with api_client() as client:
         response = await client.get("/event-types/Strizhka/slots")
-        assert response.status_code == 404
-        assert response.json()["code"] == "event_type_not_found"
+        assert response.status_code == 400
+        assert response.json()["code"] == "validation_failed"
 
 
 async def test_unparseable_body_is_validation_failed():
@@ -242,6 +242,19 @@ async def test_overlap_is_slot_unavailable():
         )
         assert response.status_code == 409
         assert response.json() == {"code": "slot_unavailable", "message": response.json()["message"]}
+
+
+async def test_overlap_across_different_event_types_is_slot_unavailable():
+    async with api_client() as client:
+        await client.post("/event-types", json=EVENT_TYPE)
+        await client.post("/event-types", json={"id": "masazh", "name": "Массаж", "description": "d", "durationInMinutes": 30})
+        await client.post("/bookings", json={"eventTypeId": "strizhka", "start": "2026-08-12T07:00:00Z", "guest": {"name": "A", "email": "a@example.com"}})
+        response = await client.post(
+            "/bookings",
+            json={"eventTypeId": "masazh", "start": "2026-08-12T07:00:00Z", "guest": {"name": "B", "email": "b@example.com"}},
+        )
+        assert response.status_code == 409
+        assert response.json()["code"] == "slot_unavailable"
 
 
 async def test_back_to_back_bookings_are_allowed():

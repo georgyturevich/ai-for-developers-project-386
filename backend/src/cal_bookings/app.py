@@ -20,6 +20,7 @@ from cal_bookings.schemas import (
     EventTypeSummary,
     GuestInfo,
     Slot,
+    Slug,
 )
 from cal_bookings.store import DuplicateSlugError, InMemoryStore, SlotUnavailableError
 
@@ -114,7 +115,7 @@ def create_app(clock: Callable[[], datetime] | None = None) -> FastAPI:
 
     @app.get("/event-types/{event_type_id}/slots", response_model=list[Slot], tags=["Guest"])
     async def list_slots(
-        event_type_id: str,
+        event_type_id: Slug,
         now: Annotated[datetime, Depends(get_now)],
         store: Annotated[InMemoryStore, Depends(get_store)],
     ) -> list[Slot]:

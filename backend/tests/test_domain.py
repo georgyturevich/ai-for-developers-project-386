@@ -15,10 +15,6 @@ from tests.conftest import NOW
 HOUR = 3600
 
 
-def at(offset_hours: float, day: date = date(2026, 8, 12)) -> datetime:
-    return datetime(day.year, day.month, day.day, tzinfo=UTC) + timedelta(hours=offset_hours)
-
-
 def _group_by_day(starts: list[datetime]) -> dict[date, list[datetime]]:
     groups: dict[date, list[datetime]] = {}
     for start in starts:
