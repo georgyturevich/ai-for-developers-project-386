@@ -42,6 +42,15 @@ def _pin_state_dependent_parameters(context, case, kwargs) -> None:
     elif case.operation.path == "/bookings" and case.operation.method.upper() == "POST" and isinstance(case.body, dict):
         case.body["eventTypeId"] = SEEDED_SLUG
         case.body["start"] = _future_seeded_start()
+        # Pin the Guest to a plain value: the backend's EmailStr accepts
+        # internationalized addresses that the contract's `email` format rejects,
+        # so generated exotic addresses would be echoed back in a 201 that then
+        # violates the response schema.
+        case.body["guest"] = {
+            "name": "Иван Петров",
+            "email": "ivan.petrov@example.com",
+            "comment": "Хочу обсудить детали заранее.",
+        }
 
 
 @schema.parametrize()
