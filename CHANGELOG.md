@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.2.0...cal-bookings-api-v0.3.0) (2026-08-12)
+
+
+### Features
+
+* Docker & Railway deployment — single-container image on $PORT ([#24](https://github.com/georgyturevich/ai-for-developers-project-386/issues/24)) ([3ef5366](https://github.com/georgyturevich/ai-for-developers-project-386/commit/3ef53669635680ce26e7f75feba48caec2edf385))
+
 ## [0.2.0](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.1.0...cal-bookings-api-v0.2.0) (2026-08-12)
 
 
