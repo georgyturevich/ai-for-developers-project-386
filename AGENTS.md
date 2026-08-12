@@ -21,6 +21,18 @@ Three packages, spec-first:
 - **`backend/`** — Python 3.14 FastAPI service (uv-managed) implementing the contract. Domain rules live in a framework-free core (`src/cal_bookings/domain.py`) with an injectable clock; data is an in-memory store (resets on restart, per the assignment); all errors use the contract's `code` + `message` body. Lint (`ruff`) and tests (`pytest`, including schemathesis conformance) run inside `backend/`; `make backend-test` regenerates the spec first. The server runs on port 8000 with CORS open for `http://localhost:5173`.
 - **E2E** — Playwright at the repo root drives the assembled system (real browser, real Vite dev server, real backend) through the scenarios in `docs/e2e-scenarios.md`; `npm run test:e2e` / `make e2e`. See `docs/agents/` and ADR-0005.
 
+## Deployment
+
+One Docker image (root `Dockerfile`, multi-stage) contains the whole app: the
+FastAPI backend serves both the API and the built SPA on a single `$PORT`
+(`STATIC_DIR` env var; see ADR-0006). `make deploy` deploys the current working
+revision to Railway via an attached `railway up` (uploads uncommitted changes —
+`.gitignore` applies, `.dockerignore` does not); every published GitHub release
+deploys automatically via `.github/workflows/deploy-release.yml` with the
+`RAILWAY_TOKEN` secret (a project token, scoped to one project+environment) and
+the `RAILWAY_SERVICE` repo variable. Exactly one worker and one replica: the
+in-memory store's atomicity assumes a single event loop (ADR-0004).
+
 ## Conventional Commits
 
 Binding for every commit an agent makes, and for every PR title and commit
