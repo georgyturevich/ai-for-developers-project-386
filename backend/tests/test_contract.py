@@ -8,6 +8,7 @@ isolated and the state-dependent success paths are reachable.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import schemathesis
@@ -18,7 +19,18 @@ from cal_bookings.app import create_app
 SPEC = Path(__file__).parents[2] / "tsp-output" / "@typespec" / "openapi3" / "openapi.yaml"
 
 SEEDED_SLUG = "strizhka"
-SEEDED_START = "2026-08-12T07:00:00Z"  # on the 60-minute grid, ahead of any clock
+
+# The app under test gets a frozen clock (ADR-0004), so the suite is
+# deterministic at any wall-clock moment — the seeded start must simply lie on
+# the 60-minute grid inside the Booking Window relative to this instant.
+FROZEN_NOW = datetime(2026, 8, 12, 6, 0, tzinfo=UTC)
+
+
+def _future_seeded_start() -> str:
+    """The day after the frozen instant, 09:00 in the Owner timezone."""
+    tomorrow = FROZEN_NOW.astimezone(domain.OWNER_TIMEZONE).date() + timedelta(days=1)
+    return domain.day_anchor_utc(tomorrow).isoformat()
+
 
 schema = schemathesis.openapi.from_path(str(SPEC))
 
@@ -27,14 +39,14 @@ schema = schemathesis.openapi.from_path(str(SPEC))
 def _pin_state_dependent_parameters(context, case, kwargs) -> None:
     if case.operation.path == "/event-types/{eventTypeId}/slots":
         case.path_parameters["eventTypeId"] = SEEDED_SLUG
-    elif case.operation.path == "/bookings" and case.operation.method == "POST" and isinstance(case.body, dict):
+    elif case.operation.path == "/bookings" and case.operation.method.upper() == "POST" and isinstance(case.body, dict):
         case.body["eventTypeId"] = SEEDED_SLUG
-        case.body["start"] = SEEDED_START
+        case.body["start"] = _future_seeded_start()
 
 
 @schema.parametrize()
 def test_contract_conformance(case) -> None:
-    app = create_app()
+    app = create_app(clock=lambda: FROZEN_NOW)
     app.state.store.create_event_type(
         domain.EventType(id=SEEDED_SLUG, name="Стрижка", description="Тестовый тип события.", duration_in_minutes=60)
     )
