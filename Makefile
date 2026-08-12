@@ -1,7 +1,7 @@
 SPEC := tsp-output/@typespec/openapi3/openapi.yaml
 DOCS := tsp-output/docs/openapi.html
 
-.PHONY: all spec docs clean dev backend-install backend-run backend-test backend-lint e2e
+.PHONY: all spec docs clean dev backend-install backend-run backend-test backend-lint e2e deploy
 
 all: docs
 
@@ -38,6 +38,14 @@ backend-lint:
 
 e2e:
 	npm run test:e2e
+
+# Deploy the current working revision to the linked Railway project. Attached
+# `railway up` streams build+deploy logs and its exit code reflects success.
+# Sharp edge (accepted): `railway up` uploads the working tree including
+# uncommitted changes, respects `.gitignore`, and never consults .dockerignore.
+deploy:
+	npx railway status
+	npx railway up
 
 clean:
 	rm -rf tsp-output
