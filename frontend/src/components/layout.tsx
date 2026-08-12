@@ -19,10 +19,11 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className="border-t">
-        <div className="mx-auto w-full max-w-3xl px-4 py-4 text-sm">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-4 text-sm">
           <Link to="/owner" className="text-muted-foreground hover:text-foreground hover:underline">
             Владельцу
           </Link>
+          <span className="text-muted-foreground">&copy; Cal Bookings Lab</span>
         </div>
       </footer>
       <Toaster richColors position="top-center" />
