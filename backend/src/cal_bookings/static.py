@@ -26,15 +26,11 @@ class SPAStaticFiles(StaticFiles):
 
     async def get_response(self, path: str, scope: Scope) -> Response:
         try:
-            response = await super().get_response(path, scope)
+            return await super().get_response(path, scope)
         except HTTPException as exc:
-            if exc.status_code == 404 and not _is_api_path(scope["path"]):
-                response = await super().get_response("index.html", scope)
-            else:
+            if exc.status_code != 404 or _is_api_path(scope["path"]):
                 raise
-        if response.status_code == 404 and not _is_api_path(scope["path"]):
-            response = await super().get_response("index.html", scope)
-        return response
+            return await super().get_response("index.html", scope)
 
 
 def _is_api_path(path: str) -> bool:
