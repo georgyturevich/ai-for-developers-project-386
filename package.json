@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@railway/cli": "5.37.7",
     "@stoplight/prism-cli": "^5.14.2",
     "redoc-cli": "^0.13.21"
   }
