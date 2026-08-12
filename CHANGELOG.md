@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.3.0...cal-bookings-api-v0.3.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* **ci:** chain Railway deploy into release-please.yml instead of a dead separate workflow ([#26](https://github.com/georgyturevich/ai-for-developers-project-386/issues/26)) ([bb8321c](https://github.com/georgyturevich/ai-for-developers-project-386/commit/bb8321cd8f14e0802735e3af953a03ecd6ad37ba))
+
 ## [0.3.0](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.2.0...cal-bookings-api-v0.3.0) (2026-08-12)
 
 
