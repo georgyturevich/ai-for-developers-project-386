@@ -1,7 +1,7 @@
 SPEC := tsp-output/@typespec/openapi3/openapi.yaml
 DOCS := tsp-output/docs/openapi.html
 
-.PHONY: all spec docs clean dev backend-install backend-run backend-test backend-lint
+.PHONY: all spec docs clean dev backend-install backend-run backend-test backend-lint e2e
 
 all: docs
 
@@ -35,6 +35,9 @@ backend-test: spec
 
 backend-lint:
 	cd backend && uv run ruff check src tests
+
+e2e:
+	npm run test:e2e
 
 clean:
 	rm -rf tsp-output
