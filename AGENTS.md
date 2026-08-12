@@ -28,9 +28,12 @@ FastAPI backend serves both the API and the built SPA on a single `$PORT`
 (`STATIC_DIR` env var; see ADR-0006). `make deploy` deploys the current working
 revision to Railway via an attached `railway up` (uploads uncommitted changes —
 `.gitignore` applies, `.dockerignore` does not); every published GitHub release
-deploys automatically via `.github/workflows/deploy-release.yml` with the
-`RAILWAY_TOKEN` secret (a project token, scoped to one project+environment) and
-the `RAILWAY_SERVICE` repo variable. Exactly one worker and one replica: the
+deploys automatically via a `deploy` job chained into the release-please
+workflow (release-please creates releases with `GITHUB_TOKEN`, which GitHub
+refuses to use as a trigger for a separate workflow — so the deploy is a second
+job in the same run, gated on `release_created`). It uses the `RAILWAY_TOKEN`
+secret (a project token, scoped to one project+environment) and the
+`RAILWAY_SERVICE` repo variable. Exactly one worker and one replica: the
 in-memory store's atomicity assumes a single event loop (ADR-0004).
 
 ## Conventional Commits

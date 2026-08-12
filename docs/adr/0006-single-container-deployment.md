@@ -40,10 +40,10 @@ backend serves both the API and the built SPA from a single process on a single
   `import.meta.env.VITE_API_URL ?? "http://localhost:4010"` fallback keeps the
   empty string, yielding same-origin relative requests. The frontend source
   stays byte-identical — a deliberate, implicit-but-reliable Vite behavior.
-- **Hosting: Railway.** `make deploy` runs an attached `railway up`; a GitHub
-  Actions workflow deploys every published release (release-please is the
-  release source), checking out the tagged revision and running
-  `railway up --service <name> --ci` with a project token.
+- **Hosting: Railway.** `make deploy` runs an attached `railway up`; a `deploy`
+  job chained into the release-please workflow deploys every published release
+  (release-please is the release source), checking out the tagged revision and
+  running `railway up --service <name> --ci` with a project token.
 
 ### Alternatives considered and rejected
 
