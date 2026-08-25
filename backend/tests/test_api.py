@@ -232,6 +232,23 @@ async def test_invalid_guest_email_is_validation_failed():
         assert response.json()["code"] == "validation_failed"
 
 
+async def test_validation_failed_body_is_uniform_across_producers():
+    """Every path that can emit validation_failed returns the same {code, message} body shape."""
+    async with api_client() as client:
+        await client.post("/event-types", json=EVENT_TYPE)
+        responses = [
+            await client.post("/bookings", json={"eventTypeId": "strizhka", "start": "2026-08-12T07:30:00Z", "guest": {"name": "A", "email": "a@example.com"}}),  # off-grid
+            await client.post("/bookings", json={"eventTypeId": "strizhka", "start": "2026-08-12T05:00:00Z", "guest": {"name": "A", "email": "a@example.com"}}),  # past
+            await client.post("/bookings", json={"eventTypeId": "strizhka", "start": "2026-08-26T06:00:00Z", "guest": {"name": "A", "email": "a@example.com"}}),  # outside window
+            await client.get("/event-types/Strizhka/slots"),  # bad slug in path
+            await client.post("/event-types", content=b"\x00\xff\xfe", headers={"Content-Type": "application/json"}),  # unparseable body
+        ]
+        for response in responses:
+            assert response.status_code == 400
+            assert set(response.json()) == {"code", "message"}
+            assert response.json()["code"] == "validation_failed"
+
+
 async def test_overlap_is_slot_unavailable():
     async with api_client() as client:
         await client.post("/event-types", json=EVENT_TYPE)
