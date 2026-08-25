@@ -33,6 +33,10 @@ def http_error(status_code: int, code: str, message: str) -> HTTPException:
     return HTTPException(status_code=status_code, detail={"code": code, "message": message})
 
 
+def validation_error(message: str) -> HTTPException:
+    return http_error(400, "validation_failed", message)
+
+
 def get_store(request: Request) -> InMemoryStore:
     return request.app.state.store
 
@@ -143,11 +147,11 @@ def create_app(clock: Callable[[], datetime] | None = None) -> FastAPI:
         if event_type is None:
             raise http_error(404, "event_type_not_found", f"Тип события «{body.event_type_id}» не найден.")
         if not domain.is_valid_grid_start(body.start, event_type.duration_in_minutes):
-            raise http_error(400, "validation_failed", "Старт не лежит на сетке слотов или не помещается в рабочие часы.")
+            raise validation_error("Старт не лежит на сетке слотов или не помещается в рабочие часы.")
         if domain.is_past(body.start, now):
-            raise http_error(400, "validation_failed", "Старт уже в прошлом.")
+            raise validation_error("Старт уже в прошлом.")
         if not domain.is_within_window(body.start, now):
-            raise http_error(400, "validation_failed", "Старт вне окна записи.")
+            raise validation_error("Старт вне окна записи.")
         try:
             booking = store.create_booking(
                 event_type.id,
