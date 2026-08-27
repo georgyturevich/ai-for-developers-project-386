@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.4.0...cal-bookings-api-v0.5.0) (2026-08-27)
+
+
+### Features
+
+* review hardening — strict contract scalars, fixed 30-minute Slot Grid, request limits, S5 conflict e2e ([#37](https://github.com/georgyturevich/ai-for-developers-project-386/issues/37)) ([d481fd9](https://github.com/georgyturevich/ai-for-developers-project-386/commit/d481fd97371815735ea5db03175de8ae5521f5e2))
+
 ## [0.4.0](https://github.com/georgyturevich/ai-for-developers-project-386/compare/cal-bookings-api-v0.3.1...cal-bookings-api-v0.4.0) (2026-08-12)
 
 
